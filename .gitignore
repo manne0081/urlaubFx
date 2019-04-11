@@ -25,6 +25,6 @@ hs_err_pid*
 ########################
 .classpath
 .project
-.setting/
+.settings/
 bin/
 build.fxbuild
