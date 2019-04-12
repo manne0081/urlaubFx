@@ -2,7 +2,54 @@
 
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1">
-	<!-- TODO Add Nodes -->
-</AnchorPane>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+			prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+			fx:controller="application.components.componentMainPage.MainPageViewModel">
 
+	<children>
+		<VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="600.0">
+			<children>
+				<HBox prefHeight="50.0" prefWidth="200.0">
+					<children>
+						<Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logout" text="Abmelden">
+							<HBox.margin>
+								<Insets left="10.0" top="10.0"/>
+							</HBox.margin>
+						</Button>
+					</children>
+				</HBox>
+				<Label fx:id="welcome" text="Herzlich Willkommen">
+					<font>
+						<Font name="System Bold" size="20.0"/>
+					</font>
+					<VBox.margin>
+						<Insets top="50.0"/>
+					</VBox.margin>
+				</Label>
+				<Label fx:id="userName" text="placeholder">
+					<font>
+						<Font size="16.0"/>
+					</font>
+					<VBox.margin>
+						<Insets top="20.0"/>
+					</VBox.margin>
+				</Label>
+
+				<Button fx:id="openAbsence" mnemonicParsing="false" onAction="#openAbsence" text="Urlaub einreichen">
+					<VBox.margin>
+						<Insets top="50.0"/>
+					</VBox.margin>
+				</Button>
+
+			</children>
+		</VBox>
+	</children>
+
+</Pane>

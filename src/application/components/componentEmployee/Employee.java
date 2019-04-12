@@ -16,14 +16,15 @@ public class Employee {
 	private int vacationClaim;
 	
 	private Department department;
-	
+
+
 	/* simulate Data */
 	private static Employee[] employeeList = {
 		new Employee("Daniel", "Düsentrieb", "daniel", "pass"),
 		new Employee("Kater", "Karlo", "kater", "pass"),
 	};
-	
-	
+
+
 	/* Constructor */
 	/**
 	 *
@@ -116,7 +117,7 @@ public class Employee {
 	 * @param password
 	 * @return
 	 */
-	public static boolean checkIsLoggedIn(String userName, String password) {
+	public static boolean isLoggedIn(String userName, String password) {
 		boolean bool = false;
 		for (Employee employee : employeeList) {
 			if (employee.getUserName().equals(userName)) {

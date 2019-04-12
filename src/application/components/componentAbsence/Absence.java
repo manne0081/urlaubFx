@@ -18,6 +18,10 @@ public class Absence {
 
 	
 	/* Constructor */
+	public Absence(Employee employee) {
+		setEmployee(employee);
+	}
+
 	public Absence(Employee employee, Date absenceFrom, Date absenceTo) {
 		setEmployee(employee);
 		setAbsenceFrom(absenceFrom);
@@ -49,9 +53,17 @@ public class Absence {
 	public void setAbsenceTo(Date absenceTo) {
 		this.absenceTo = absenceTo;
 	}
-	
-	
-	
+
+
+	public void getAllAbsenceFromArrayList() {
+		for (int i = 0; i < absences.size(); i++) {
+			System.out.println(absences.get(i).getEmployee().getFullName());
+		}
+	}
+
+	public void setAbsenceToArrayList(Absence absence) {
+		absences.add(absence);
+	}
 	
 	
 	

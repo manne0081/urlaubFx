@@ -45,11 +45,9 @@ public class LoginViewModel {
 	 */
 	@FXML
 	public void gotoMainPage(ActionEvent event) {
-		boolean bool = Employee.checkIsLoggedIn(this.usernameTextField.getText(), this.passwordPasswordField.getText());
-//		System.out.println(bool);
+		boolean bool = Employee.isLoggedIn(this.usernameTextField.getText(), this.passwordPasswordField.getText());
 		Employee employee = Employee.getLoggedInUser(this.usernameTextField.getText(), this.passwordPasswordField.getText());
-//		System.out.println(employee.getFullName());
-		
+
 		if (bool) {
 			Session session = new Session(employee);
 			openMainView(event);
