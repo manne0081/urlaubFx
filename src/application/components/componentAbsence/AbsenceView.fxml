@@ -15,7 +15,7 @@
 				<Font name="System Bold" size="16.0" />
 			</font>
 		</Label>
-		<DatePicker fx:id="absenceFromDatePicker" layoutX="137.0" layoutY="137.0" onAction="#showDate" />
+		<DatePicker fx:id="absenceFromDatePicker" layoutX="137.0" layoutY="137.0" />
 		<Label layoutX="14.0" layoutY="140.0" text="Urlaub von:" />
 		<DatePicker fx:id="absenceToDatePicker" layoutX="137.0" layoutY="177.0" />
 		<Label layoutX="14.0" layoutY="180.0" text="Urlaub bis:" />
