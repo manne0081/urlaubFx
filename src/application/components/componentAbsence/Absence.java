@@ -21,14 +21,14 @@ public class Absence {
 	
 	/* Constructor */
 	/* *********** */
-	public Absence(Employee employee) {
-		setEmployee(employee);
+	public Absence(Employee employee, Date absenceFrom) {
+		this.employee = employee;
+		this.absenceFrom = absenceFrom;
 	}
 
 	public Absence(Employee employee, Date absenceFrom, Date absenceTo) {
-		setEmployee(employee);
-		setAbsenceFrom(absenceFrom);
-		setAbsenceTo(absenceTo);
+		this(employee, absenceFrom);
+		this.absenceTo = absenceTo;
 	}
 
 
@@ -83,7 +83,7 @@ public class Absence {
 	 * @return
 	 * @throws Exception
 	 */
-	public Double getNumberDays(Date dateFrom, Date dateTo) throws Exception {
+	public Double getNumberDays(Date dateFrom, Date dateTo){
 		Double dblDays;
 
 		long time = dateTo.getTime() - dateFrom.getTime(); // Difference in milli-seconds

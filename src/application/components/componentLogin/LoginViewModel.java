@@ -23,13 +23,13 @@ import javafx.stage.Stage;
  */
 public class LoginViewModel {
 	@FXML
-	private TextField usernameTextField;
+	private TextField username;
 	@FXML
-	private PasswordField passwordPasswordField;
+	private PasswordField password;
 	@FXML
-	private Button loginButton;
+	private Button login;
 	@FXML
-	private Label loginStatusLabel;
+	private Label loginStatus;
 	
 	
 	/**
@@ -44,15 +44,14 @@ public class LoginViewModel {
 	 * @param event
 	 */
 	@FXML
-	public void gotoMainPage(ActionEvent event) {
-		boolean bool = Employee.isLoggedIn(this.usernameTextField.getText(), this.passwordPasswordField.getText());
-		Employee employee = Employee.getLoggedInUser(this.usernameTextField.getText(), this.passwordPasswordField.getText());
+	public void checkLoginData(ActionEvent event) {
+		Employee employee = Employee.checkUserData(this.username.getText(), this.password.getText());
 
-		if (bool) {
+		if (employee != null) {
 			Session session = new Session(employee);
 			openMainView(event);
 		} else {
-			this.loginStatusLabel.setText("Anmeldung fehlgeschlagen!");
+			this.loginStatus.setText("Anmeldung fehlgeschlagen!");
 			Session.setEmployee(null);
 		}
 		

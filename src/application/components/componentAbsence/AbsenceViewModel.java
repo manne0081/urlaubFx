@@ -12,6 +12,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import sun.misc.ExtensionInstallationException;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -22,15 +23,15 @@ import java.util.Date;
 
 public class AbsenceViewModel {
 	@FXML
-	private Button backButton;
+	private Button goBack;
 	@FXML
-	private DatePicker absenceFromDatePicker, absenceToDatePicker;
+	private DatePicker absenceFrom, absenceTo;
 	@FXML
-	private CheckBox absenceFromHalfCheckBox, absenceToHalfCheckBox;
+	private CheckBox absenceFromHalf, absenceToHalf;
 	@FXML
-	private Button soughtVacationButton;
+	private Button soughtVacation;
 	@FXML
-	private Label soughtVacationLabel;
+	private Label showVacation;
 
 
 	/**
@@ -65,26 +66,62 @@ public class AbsenceViewModel {
 	 * @throws Exception 
 	 */
 	public void applyForVacation(ActionEvent event) throws Exception {
-		/* LocalDate from DatePicker */
-		LocalDate localDateFrom = this.absenceFromDatePicker.getValue();
-		LocalDate localDateTo = this.absenceToDatePicker.getValue();
-		
-		/* DatePicker to Date */
+
+		LocalDate localDateFrom = this.absenceFrom.getValue();
 		Date dateFrom = Date.from(localDateFrom.atStartOfDay(ZoneId.systemDefault()).toInstant());
-		Date dateTo = Date.from(localDateTo.atStartOfDay(ZoneId.systemDefault()).toInstant());
-				
+
 		/* Number Vacation Days */
 //		Long range = ChronoUnit.DAYS.between(localDateFrom, localDateTo) + 1;
-        
-		/* ADD Absence and put it into ArrayList */
-		Absence absence = new Absence(Session.getEmployee(), dateFrom, dateTo);
+		System.out.println(this.absenceTo);
+		System.out.println(this.absenceTo.getValue());
+
+		if (this.absenceTo.getValue() == null) {
+//			System.out.println("absenceTo ist null");
+			Absence absence = new Absence(Session.getEmployee(), dateFrom);
+			absenceToArrayList(absence);
+			setText(absence, dateFrom);
+		} else {
+//			System.out.println("absenceTo isnt null");
+			LocalDate localDateTo = this.absenceTo.getValue();
+			Date dateTo = Date.from(localDateTo.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+			Absence absence = new Absence(Session.getEmployee(), dateFrom, dateTo);
+			absenceToArrayList(absence);
+			setText(absence, dateFrom, dateTo);
+		}
+	}
+
+
+	/**
+	 *
+	 * @param absence
+	 */
+	private void absenceToArrayList(Absence absence){
 		absence.setAbsenceToArrayList(absence);
-		
-		/* Get the Number of Vacation-Days  */
+	}
+
+	/**
+	 *
+	 * @param absence
+	 * @param dateFrom
+	 * @param dateTo
+	 */
+	private void setText(Absence absence, Date dateFrom, Date dateTo) {
+		/* Show Vacation-Time and Number Vacation-Days  */
+		double numberDays = absence.getNumberDays(dateFrom, dateTo);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-		this.soughtVacationLabel.setText("vom: " + sdf.format(dateFrom) + 
-				" bis: " + sdf.format(dateTo) + 
-				" Dauer: " + absence.getNumberDays(dateFrom, dateTo) + 
+		this.showVacation.setText("vom: " + sdf.format(dateFrom) +
+				" bis: " + sdf.format(dateTo) +
+				" Dauer: " + numberDays +
+				" Tage");
+	}
+
+	private void setText(Absence absence, Date dateFrom) {
+		/* Show Vacation-Time and Number Vacation-Days  */
+		double numberDays = 1;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+		this.showVacation.setText("am: " + sdf.format(dateFrom) +
+				" Dauer: " + numberDays +
 				" Tage");
 	}
 

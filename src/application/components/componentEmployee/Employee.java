@@ -14,14 +14,15 @@ public class Employee {
 	private String password;
 	private double weeklyWorkTime;
 	private int vacationClaim;
+	private int vacationRest;
 	
 	private Department department;
 
 
 	/* simulate Data */
 	private static Employee[] employeeList = {
-		new Employee("Daniel", "Düsentrieb", "daniel", "pass"),
-		new Employee("Kater", "Karlo", "kater", "pass"),
+		new Employee("Daniel", "Düsentrieb", "daniel", "pass", 30),
+		new Employee("Kater", "Karlo", "kater", "pass",25),
 	};
 
 
@@ -46,10 +47,13 @@ public class Employee {
 	 * @param pass
 	 */
 	public Employee(String nameI, String nameII, String user, String pass) {
-		this.setNameI(nameI);
+		this(nameI, user, pass);
 		this.setNameII(nameII);
-		this.setUserName(user);
-		this.setPassword(pass);
+	}
+
+	public Employee(String nameI, String nameII, String user, String pass, int vacationClaim) {
+		this(nameI, nameII, user, pass);
+		this.setVacationClaim(vacationClaim);
 	}
 
 	
@@ -109,26 +113,7 @@ public class Employee {
 	public void setDepartment(Department department) {
 		this.department = department;
 	}
-	
-		
-	/**
-	 * 	
-	 * @param userName
-	 * @param password
-	 * @return
-	 */
-	public static boolean isLoggedIn(String userName, String password) {
-		boolean bool = false;
-		for (Employee employee : employeeList) {
-			if (employee.getUserName().equals(userName)) {
-				if (employee.getPassword().equals(password)) {
-					bool = true;
-				}
-			}			
-		}
-		return bool;
-	}
-	
+
 	
 	/**
 	 * 
@@ -136,7 +121,7 @@ public class Employee {
 	 * @param password
 	 * @return
 	 */
-	public static Employee getLoggedInUser(String userName, String password) {
+	public static Employee checkUserData(String userName, String password) {
 		Employee employee = null;
 		for (Employee e : employeeList) {
 			if (e.getUserName().equals(userName)) {
