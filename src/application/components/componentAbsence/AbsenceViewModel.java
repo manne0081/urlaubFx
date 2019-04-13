@@ -72,8 +72,6 @@ public class AbsenceViewModel {
 
 		/* Number Vacation Days */
 //		Long range = ChronoUnit.DAYS.between(localDateFrom, localDateTo) + 1;
-		System.out.println(this.absenceTo);
-		System.out.println(this.absenceTo.getValue());
 
 		if (this.absenceTo.getValue() == null) {
 //			System.out.println("absenceTo ist null");

@@ -65,7 +65,11 @@ public class Absence {
 		for (int i = 0; i < absences.size(); i++) {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 			String strDateFrom = sdf.format(absences.get(i).getAbsenceFrom());
-			String strDateTo = sdf.format(absences.get(i).getAbsenceTo());
+			String strDateTo = "";
+			if (absences.get(i).getAbsenceTo() != null) {
+				strDateTo = sdf.format(absences.get(i).getAbsenceTo());
+			} else {
+			}
 			System.out.println(absences.get(i).getEmployee().getFullName() + 
 					" - " + strDateFrom + " - " + strDateTo);			
 		}
