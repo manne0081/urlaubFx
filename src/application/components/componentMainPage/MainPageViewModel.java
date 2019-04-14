@@ -20,6 +20,14 @@ public class MainPageViewModel {
 	private Label userName;
 
 
+	/**
+	 *
+	 */
+	public void initialize() {
+		setUserName(Session.getEmployee().getFullName());
+	}
+
+	
 	/* GETTER & SETTER */
 	public Label getUserName() {
 		return userName;
@@ -28,20 +36,9 @@ public class MainPageViewModel {
 	public void setUserName(String string) {
 		this.userName.setText(string);
 	}
+	
 
-
-	/**
-	 *
-	 */
-	public void initialize() {
-		setUserName(Session.getEmployee().getFullName());
-	}
-
-
-	/**
-	 *
-	 * @param event
-	 */
+	/* Methods */
 	public void openAbsence(ActionEvent event) {
 		try {
 			// Create the scene
@@ -60,10 +57,7 @@ public class MainPageViewModel {
 		}
 	}
 
-	/**
-	 *
-	 * @param event
-	 */
+
 	public void logout(ActionEvent event) {
 		try {
 			// Create the scene
@@ -78,7 +72,6 @@ public class MainPageViewModel {
 			stage.show();
 
 			Session.setEmployee(null);
-			System.out.println(Session.getEmployee());
 
 		} catch (IOException e) {
 			e.printStackTrace();

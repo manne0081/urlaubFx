@@ -15,20 +15,24 @@ import application.components.componentEmployee.Employee;
 public class Absence {
 	private Employee employee;
 	private Date absenceFrom;
+	private static boolean absenceFromHalf;
 	private Date absenceTo;
+	private static boolean absenceToHalf;
 	private static ArrayList<Absence> absences = new ArrayList<Absence>();
 
 	
 	/* Constructor */
 	/* *********** */
-	public Absence(Employee employee, Date absenceFrom) {
+	public Absence(Employee employee, Date absenceFrom, boolean absenceFromHalf) {
 		this.employee = employee;
 		this.absenceFrom = absenceFrom;
+		this.absenceFromHalf = absenceFromHalf;
 	}
 
-	public Absence(Employee employee, Date absenceFrom, Date absenceTo) {
-		this(employee, absenceFrom);
+	public Absence(Employee employee, Date absenceFrom, Date absenceTo, boolean absenceFromHalf, boolean absenceToHalf) {
+		this(employee, absenceFrom, absenceFromHalf);
 		this.absenceTo = absenceTo;
+		this.absenceToHalf = absenceToHalf;
 	}
 
 
@@ -50,6 +54,14 @@ public class Absence {
 		this.absenceFrom = absenceFrom;
 	}
 
+	public boolean getAbsenceFromHalf() {
+		return absenceFromHalf;
+	}
+	
+	public void setAbscenceFromHalf(boolean absenceFromHalf) {
+		this.absenceFromHalf = absenceFromHalf;
+	}
+	
 	public Date getAbsenceTo() {
 		return absenceTo;
 	}
@@ -58,9 +70,16 @@ public class Absence {
 		this.absenceTo = absenceTo;
 	}
 
+	public boolean getAbsenceToHalf() {
+		return absenceToHalf;
+	}
 	
-	/* private & public Methods */
-	/* ************************ */
+	public void setAbscenceToHalf(boolean absenceToHalf) {
+		this.absenceToHalf = absenceToHalf;
+	}
+	
+	/* Instance-Methods */
+	/* **************** */
 	public static void getAllAbsenceFromArrayList() {
 		for (int i = 0; i < absences.size(); i++) {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -81,24 +100,47 @@ public class Absence {
 	
 	
 	/**
-	 * Berechnet die Anzahl der Gesamt-Urlaubstage (incl. Wochenende)
+	 * Berechnet die Anzahl der gesamt eingetragenen Urlaubstage (incl. Wochenende)
 	 * @param dateFrom Datum des ersten Urlaubstages
 	 * @param dateTo Datum des letzten Urlaubstages
-	 * @return
+	 * @return Gesamt Tage
 	 * @throws Exception
 	 */
-	public Double getNumberDays(Date dateFrom, Date dateTo){
+	public static Double getNumberDays(Date dateFrom, boolean dateFromHalf, Date dateTo, boolean dateToHalf){
 		Double dblDays;
 
 		long time = dateTo.getTime() - dateFrom.getTime(); // Difference in milli-seconds
 		double days = Math.round((double) time / (24. * 60. * 60. * 1000.) + 1); // Difference in days
-		dblDays = days;
-		
-		dblDays = getRealAbsenceDays(dateFrom, dblDays);
-		
+		dblDays = days;		
+		dblDays = getRealAbsenceDays(dateFrom, dblDays);		
+		if (dateFromHalf) {
+			dblDays -= 0.5;
+		}
+		if (dateToHalf) {
+			dblDays -= 0.5;
+		}
 		return dblDays;
 	}
 
+	public Double getNumberDays(Absence absence){
+		double days = 0.0;
+		if (absence.getAbsenceTo() != null) {
+			long time = absence.getAbsenceTo().getTime() - absence.getAbsenceFrom().getTime();  // Difference in milli-seconds
+			days = Math.round((double) time / (24. * 60. * 60. * 1000.) + 1); // Difference in days
+			days = getRealAbsenceDays(absence.getAbsenceFrom(), days);
+		} else {
+			days = 1.0;
+		}		
+		if (absenceFromHalf) {
+			days -= 0.5;
+		}
+		if (absenceToHalf) {
+			days -= 0.5;
+		}
+		return days;
+		
+	}
+	
 	
 	/**
 	 * Berechnet die tatsächlichen Urlaubstage (abzgl. Wochenende)
@@ -106,7 +148,7 @@ public class Absence {
 	 * @param dbl Anzahl der gesamt eingetragenen Urlaubstage
 	 * @return
 	 */
-	public double getRealAbsenceDays(Date dateFrom, Double dbl) {
+	public static double getRealAbsenceDays(Date dateFrom, Double dbl) {
 		int n = dbl.intValue();
 		int weekDay;
 		int absenceDays = 0;

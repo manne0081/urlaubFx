@@ -16,14 +16,15 @@
 			</font>
 		</Label>
 		<Label layoutX="14.0" layoutY="140.0" text="Urlaub von:" />
-		<DatePicker fx:id="absenceFrom" layoutX="137.0" layoutY="137.0" />
-		<CheckBox fx:id="absenceFromHalf" layoutX="330.0" layoutY="141.0" mnemonicParsing="false" text="halb" />
+		<DatePicker fx:id="absenceFrom" layoutX="137.0" layoutY="137.0" onAction="#vacationPreview" />
+		<CheckBox fx:id="absenceFromHalf" layoutX="330.0" layoutY="141.0" mnemonicParsing="false" onAction="#vacationPreview" text="halb" />
 		<Label layoutX="14.0" layoutY="180.0" text="Urlaub bis:" />
-		<DatePicker fx:id="absenceTo" layoutX="137.0" layoutY="177.0" />
-		<CheckBox fx:id="absenceToHalf" layoutX="330.0" layoutY="181.0" mnemonicParsing="false" text="halb" />
+		<DatePicker fx:id="absenceTo" layoutX="137.0" layoutY="177.0" onAction="#vacationPreview" />
+		<CheckBox fx:id="absenceToHalf" layoutX="330.0" layoutY="181.0" mnemonicParsing="false" onAction="#vacationPreview" text="halb" />
 		<Button fx:id="soughtVacation" layoutX="137.0" layoutY="216.0" mnemonicParsing="false" onAction="#applyForVacation" text="Urlaub beantragen" />
-		<Label layoutX="14.0" layoutY="286.0" text="Urlaub beantragt:" />
+		<Label fx:id="absencePreview" layoutX="14.0" layoutY="286.0" text="Urlaub beantragen:" />
 		<Label fx:id="showVacation" layoutX="137.0" layoutY="286.0" />
+      <Label fx:id="vacationRest" layoutX="137.0" layoutY="14.0" />
 	</children>
 
 </Pane>

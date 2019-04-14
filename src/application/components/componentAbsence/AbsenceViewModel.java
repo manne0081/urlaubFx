@@ -1,5 +1,6 @@
 package application.components.componentAbsence;
 
+import application.helper.session.Helper;
 import application.helper.session.Session;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,10 +13,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import sun.misc.ExtensionInstallationException;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -32,12 +31,18 @@ public class AbsenceViewModel {
 	private Button soughtVacation;
 	@FXML
 	private Label showVacation;
+	@FXML
+	private Label vacationRest;
+	@FXML
+	private Label absencePreview;
 
-
-	/**
-	 *
-	 * @param event
-	 */
+	
+	public void initialize() {
+		this.vacationRest.setText("Aktueller Urlaubsstand: " + Session.getEmployee().getVacationRest());
+	}
+	
+	
+	/* Methods */
 	public void backToMainView(ActionEvent event) {
 		try {
 			// Create the scene
@@ -54,73 +59,96 @@ public class AbsenceViewModel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-//		ViewLoadHelper.loadMainView(event);
-
 	}
 
 
-	/**
-	 *
-	 * @param event
-	 * @throws Exception 
-	 */
 	public void applyForVacation(ActionEvent event) throws Exception {
 
+		/* Get Date as LocalDate from DatePicker and convert to Date */
 		LocalDate localDateFrom = this.absenceFrom.getValue();
 		Date dateFrom = Date.from(localDateFrom.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
+		
 		/* Number Vacation Days */
 //		Long range = ChronoUnit.DAYS.between(localDateFrom, localDateTo) + 1;
 
 		if (this.absenceTo.getValue() == null) {
-//			System.out.println("absenceTo ist null");
-			Absence absence = new Absence(Session.getEmployee(), dateFrom);
-			absenceToArrayList(absence);
-			setText(absence, dateFrom);
+			/* When take only one Day */
+			Absence absence = new Absence(Session.getEmployee(), dateFrom, absenceFromHalf.isSelected()); // create new Absence
+			absenceToArrayList(absence); // add Absence to ArrayList
+			absence.getEmployee().substractVacationTime(absence.getNumberDays(absence));
+			
+//			setText(absence);
 		} else {
-//			System.out.println("absenceTo isnt null");
+			/* When take more then one Day */
+			/* Get Date as LocalDate from DatePicker and convert to Date */
 			LocalDate localDateTo = this.absenceTo.getValue();
 			Date dateTo = Date.from(localDateTo.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
-			Absence absence = new Absence(Session.getEmployee(), dateFrom, dateTo);
+			
+			// create new Absence
+			Absence absence = new Absence(Session.getEmployee(), dateFrom, dateTo, this.absenceFromHalf.isSelected(), this.absenceToHalf.isSelected()); 
+			// add Absence to ArrayList
 			absenceToArrayList(absence);
-			setText(absence, dateFrom, dateTo);
+			// calculate vacation-time and new rest-vacation-days
+			absence.getEmployee().substractVacationTime(absence.getNumberDays(absence));
+			
+			setText(absence);
+			this.absencePreview.setText("Urlaub beantragt: ");
 		}
 	}
 
-
-	/**
-	 *
-	 * @param absence
-	 */
+	
 	private void absenceToArrayList(Absence absence){
 		absence.setAbsenceToArrayList(absence);
 	}
 
-	/**
-	 *
-	 * @param absence
-	 * @param dateFrom
-	 * @param dateTo
-	 */
-	private void setText(Absence absence, Date dateFrom, Date dateTo) {
-		/* Show Vacation-Time and Number Vacation-Days  */
-		double numberDays = absence.getNumberDays(dateFrom, dateTo);
-		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-		this.showVacation.setText("vom: " + sdf.format(dateFrom) +
-				" bis: " + sdf.format(dateTo) +
-				" Dauer: " + numberDays +
-				" Tage");
+	
+	public void vacationPreview () {
+		String string = "";
+		
+		LocalDate localDateFrom = this.absenceFrom.getValue();
+		Date dateFrom = Date.from(localDateFrom.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		boolean boolHalfFrom = this.absenceFromHalf.isSelected();
+		
+		if (this.absenceFrom.getValue() != null) {
+			string = "Abwesend von: " + Helper.dateToString(dateFrom);
+		}
+		if (this.absenceFromHalf.isSelected()) {
+			string += " - halber Tag: " + boolHalfFrom + "\n";
+		} else {
+			string += "\n";
+		}
+				
+		if (this.absenceTo.getValue() != null) {			
+			LocalDate localDateTo = this.absenceTo.getValue();
+			Date dateTo = Date.from(localDateTo.atStartOfDay(ZoneId.systemDefault()).toInstant());
+			string += "Abwesend bis: " + Helper.dateToString(dateTo);
+			
+			boolean boolHalfTo = this.absenceToHalf.isSelected();
+			if (this.absenceToHalf.isSelected()) {
+				string += " - halber Tag: " + boolHalfTo + "\n";
+			} else {
+				string += "\n";
+			}
+			
+			boolean dateFromHalf = this.absenceFromHalf.isSelected();
+			boolean dateToHalf = this.absenceToHalf.isSelected();
+			double days = Absence.getNumberDays(dateFrom, dateFromHalf, dateTo, dateToHalf);
+			string += "Anzahl Urlaubstage: " + days;
+		}
+		this.showVacation.setText(string);		
 	}
-
-	private void setText(Absence absence, Date dateFrom) {
+	
+	
+	private void setText(Absence absence) {
 		/* Show Vacation-Time and Number Vacation-Days  */
-		double numberDays = 1;
-		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-		this.showVacation.setText("am: " + sdf.format(dateFrom) +
-				" Dauer: " + numberDays +
-				" Tage");
+		Date dateFrom = absence.getAbsenceFrom();
+		Date dateTo = absence.getAbsenceTo();
+		double numberDays = absence.getNumberDays(absence);
+		this.showVacation.setText(
+				"vom: " + Helper.dateToString(dateFrom) + "\n" + 
+				"bis: " + Helper.dateToString(dateTo) + "\n" + 
+				"Dauer: " + numberDays + " Tage" + "\n" + 
+				"Resturlaub: " + absence.getEmployee().getVacationRest());
 	}
-
+	
 }

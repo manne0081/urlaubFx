@@ -13,8 +13,8 @@ public class Employee {
 	private String username;
 	private String password;
 	private double weeklyWorkTime;
-	private int vacationClaim;
-	private int vacationRest;
+	private double vacationClaim;
+	private double vacationRest;
 	
 	private Department department;
 
@@ -23,41 +23,39 @@ public class Employee {
 	private static Employee[] employeeList = {
 		new Employee("Daniel", "Düsentrieb", "daniel", "pass", 30),
 		new Employee("Kater", "Karlo", "kater", "pass",25),
+		new Employee("Goofy", "goofy", "pass", 30)
 	};
 
 
 	/* Constructor */
-	/**
-	 *
-	 * @param nameI
-	 * @param user
-	 * @param pass
-	 */
+	/* *********** */
 	public Employee(String nameI, String user, String pass) {
 		this.setNameI(nameI);
 		this.setUserName(user);
 		this.setPassword(pass);
+		this.setVacationRest(vacationClaim);
 	}
 	
-	/**
-	 *
-	 * @param nameI
-	 * @param nameII
-	 * @param user
-	 * @param pass
-	 */
+	public Employee (String nameI, String user, String pass, int vacationClaim) {
+		this(nameI, user, pass);
+		setVacationClaim(vacationClaim);
+	}
+	
 	public Employee(String nameI, String nameII, String user, String pass) {
 		this(nameI, user, pass);
-		this.setNameII(nameII);
+		setVacationRest(vacationClaim);
+		setNameII(nameII);
 	}
 
 	public Employee(String nameI, String nameII, String user, String pass, int vacationClaim) {
 		this(nameI, nameII, user, pass);
-		this.setVacationClaim(vacationClaim);
+		setVacationRest(vacationClaim);
+		setVacationClaim(vacationClaim);
 	}
 
 	
 	/* GETTER & SETTER */
+	/* *************** */
 	public String getNameI() {
 		return nameI;
 	}
@@ -98,11 +96,11 @@ public class Employee {
 		this.weeklyWorkTime = weeklyWorkTime;
 	}
 
-	public int getVacationClaim() {
+	public double getVacationClaim() {
 		return vacationClaim;
 	}
 
-	public void setVacationClaim(int vacationClaim) {
+	public void setVacationClaim(double vacationClaim) {
 		this.vacationClaim = vacationClaim;
 	}
 
@@ -114,13 +112,16 @@ public class Employee {
 		this.department = department;
 	}
 
+	public double getVacationRest() {
+		return vacationRest;
+	}
+
+	public void setVacationRest(double vacationRest) {
+		this.vacationRest = vacationRest;
+	}
 	
-	/**
-	 * 
-	 * @param userName
-	 * @param password
-	 * @return
-	 */
+	
+	/* Instance-Methods */
 	public static Employee checkUserData(String userName, String password) {
 		Employee employee = null;
 		for (Employee e : employeeList) {
@@ -131,13 +132,8 @@ public class Employee {
 			}			
 		}
 		return employee;
-	}
+	}	
 	
-	
-	/**
-	 * 
-	 * @return
-	 */
 	public String getFullName() {
 		String strAll = "";
 		if (this.getNameI() != "") {
@@ -148,5 +144,12 @@ public class Employee {
 		}
 		return strAll;
 	}
+	
+	public double substractVacationTime(double vacationDays) {
+		setVacationRest(this.vacationRest - vacationDays);
+		return this.vacationRest;
+	}
+
+	
 	
 }
