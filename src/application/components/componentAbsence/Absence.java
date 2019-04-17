@@ -77,7 +77,8 @@ public class Absence {
 	public void setAbscenceToHalf(boolean absenceToHalf) {
 		this.absenceToHalf = absenceToHalf;
 	}
-	
+
+
 	/* Instance-Methods */
 	/* **************** */
 	public static void getAllAbsenceFromArrayList() {
@@ -123,7 +124,7 @@ public class Absence {
 	}
 
 	public Double getNumberDays(Absence absence){
-		double days = 0.0;
+		double days;
 		if (absence.getAbsenceTo() != null) {
 			long time = absence.getAbsenceTo().getTime() - absence.getAbsenceFrom().getTime();  // Difference in milli-seconds
 			days = Math.round((double) time / (24. * 60. * 60. * 1000.) + 1); // Difference in days
@@ -138,7 +139,6 @@ public class Absence {
 			days -= 0.5;
 		}
 		return days;
-		
 	}
 	
 	

@@ -64,6 +64,8 @@ public class AbsenceViewModel {
 
 	public void applyForVacation(ActionEvent event) throws Exception {
 
+		String string;
+
 		/* Get Date as LocalDate from DatePicker and convert to Date */
 		LocalDate localDateFrom = this.absenceFrom.getValue();
 		Date dateFrom = Date.from(localDateFrom.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -77,7 +79,8 @@ public class AbsenceViewModel {
 			absenceToArrayList(absence); // add Absence to ArrayList
 			absence.getEmployee().substractVacationTime(absence.getNumberDays(absence));
 			
-//			setText(absence);
+			setText(absence);
+			this.absencePreview.setText("Urlaub beantragt: ");
 		} else {
 			/* When take more then one Day */
 			/* Get Date as LocalDate from DatePicker and convert to Date */
@@ -90,9 +93,17 @@ public class AbsenceViewModel {
 			absenceToArrayList(absence);
 			// calculate vacation-time and new rest-vacation-days
 			absence.getEmployee().substractVacationTime(absence.getNumberDays(absence));
-			
-			setText(absence);
+
+			string = test();
+			string += setText(absence);
+			this.showVacation.setText(string);
 			this.absencePreview.setText("Urlaub beantragt: ");
+
+			this.absenceFrom.setDisable(true);
+			this.absenceTo.setDisable(true);
+			this.absenceFromHalf.setDisable(true);
+			this.absenceToHalf.setDisable(true);
+			this.soughtVacation.setDisable(true);
 		}
 	}
 
@@ -103,52 +114,68 @@ public class AbsenceViewModel {
 
 	
 	public void vacationPreview () {
+		this.showVacation.setText(test());
+	}
+
+
+	private String test() {
 		String string = "";
-		
-		LocalDate localDateFrom = this.absenceFrom.getValue();
-		Date dateFrom = Date.from(localDateFrom.atStartOfDay(ZoneId.systemDefault()).toInstant());
-		boolean boolHalfFrom = this.absenceFromHalf.isSelected();
-		
-		if (this.absenceFrom.getValue() != null) {
-			string = "Abwesend von: " + Helper.dateToString(dateFrom);
-		}
-		if (this.absenceFromHalf.isSelected()) {
-			string += " - halber Tag: " + boolHalfFrom + "\n";
-		} else {
-			string += "\n";
-		}
-				
-		if (this.absenceTo.getValue() != null) {			
+		double numberDays;
+
+		if (this.absenceFrom.getValue() != null && this.absenceTo.getValue() == null) {
+			// only one day
+			boolean boolHalfFrom = this.absenceFromHalf.isSelected();
+
+			LocalDate localDateFrom = this.absenceFrom.getValue();
+			Date dateFrom = Date.from(localDateFrom.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+			string += "Abwesend am: " + Helper.dateToString(dateFrom);
+			if (!boolHalfFrom) {string += "\n";}
+
+			numberDays = 1.0;
+
+			if (boolHalfFrom) {
+				string += " - halber Tag: \n";
+				numberDays -= 0.5;
+			}
+			string += "Anzahl Urlaubstage: " + numberDays;
+
+		} else if (this.absenceFrom.getValue() != null && this.absenceTo.getValue() != null) {
+			// more then one day
+			boolean boolHalfFrom = this.absenceFromHalf.isSelected();
+			boolean boolHalfTo = this.absenceToHalf.isSelected();
+
+			LocalDate localDateFrom = this.absenceFrom.getValue();
+			Date dateFrom = Date.from(localDateFrom.atStartOfDay(ZoneId.systemDefault()).toInstant());
 			LocalDate localDateTo = this.absenceTo.getValue();
 			Date dateTo = Date.from(localDateTo.atStartOfDay(ZoneId.systemDefault()).toInstant());
-			string += "Abwesend bis: " + Helper.dateToString(dateTo);
-			
-			boolean boolHalfTo = this.absenceToHalf.isSelected();
-			if (this.absenceToHalf.isSelected()) {
-				string += " - halber Tag: " + boolHalfTo + "\n";
-			} else {
-				string += "\n";
+
+			numberDays = Absence.getNumberDays(dateFrom, boolHalfFrom, dateTo, boolHalfTo);
+
+			string += "Abwesend vom: " + Helper.dateToString(dateFrom);
+			if (!boolHalfFrom) {string += "\n";}
+			if (boolHalfFrom) {
+				string += " - halber Tag: \n";
 			}
-			
-			boolean dateFromHalf = this.absenceFromHalf.isSelected();
-			boolean dateToHalf = this.absenceToHalf.isSelected();
-			double days = Absence.getNumberDays(dateFrom, dateFromHalf, dateTo, dateToHalf);
-			string += "Anzahl Urlaubstage: " + days;
+			string += "Abwesend bis: " + Helper.dateToString(dateTo);
+			if (!boolHalfTo) {string += "\n";}
+			if (boolHalfTo) {
+				string += " - halber Tag: \n";
+			}
+			string += "Anzahl Urlaubstage: " + numberDays;
 		}
-		this.showVacation.setText(string);		
+
+		return string;
 	}
+
 	
-	
-	private void setText(Absence absence) {
+	private String setText(Absence absence) {
 		/* Show Vacation-Time and Number Vacation-Days  */
-		Date dateFrom = absence.getAbsenceFrom();
-		Date dateTo = absence.getAbsenceTo();
-		double numberDays = absence.getNumberDays(absence);
-		this.showVacation.setText(
-				"vom: " + Helper.dateToString(dateFrom) + "\n" + 
-				"bis: " + Helper.dateToString(dateTo) + "\n" + 
-				"Dauer: " + numberDays + " Tage" + "\n" + 
-				"Resturlaub: " + absence.getEmployee().getVacationRest());
+		String string = "";
+		string += "\nResturlaub: " + absence.getEmployee().getVacationRest();
+
+		return string;
+
 	}
 	
 }
