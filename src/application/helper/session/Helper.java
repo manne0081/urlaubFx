@@ -1,6 +1,9 @@
 package application.helper.session;
 
+import javafx.scene.control.DatePicker;
+
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -13,7 +16,15 @@ public class Helper {
 		return d;
 	}
 	
-	
+	public static boolean isSetDatePicker(DatePicker date) {
+		boolean bool = false;
+		if (date.getValue() != null) {
+			bool = true;
+		}
+		return bool;
+	}
+
+
 //	public String absencePreview(Date dateFrom, boolean absenceFromHalf, Date dateTo, boolean absenceToHalf) {
 //		String string = "";
 //		double days = 0;

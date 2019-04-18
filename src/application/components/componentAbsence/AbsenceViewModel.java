@@ -62,6 +62,11 @@ public class AbsenceViewModel {
 	}
 
 
+	/**
+	 *
+	 * @param event
+	 * @throws Exception
+	 */
 	public void applyForVacation(ActionEvent event) throws Exception {
 
 		String string;
@@ -78,8 +83,8 @@ public class AbsenceViewModel {
 			Absence absence = new Absence(Session.getEmployee(), dateFrom, absenceFromHalf.isSelected()); // create new Absence
 			absenceToArrayList(absence); // add Absence to ArrayList
 			absence.getEmployee().substractVacationTime(absence.getNumberDays(absence));
-			
-			setText(absence);
+
+			getVacationRest(absence);
 			this.absencePreview.setText("Urlaub beantragt: ");
 		} else {
 			/* When take more then one Day */
@@ -94,8 +99,8 @@ public class AbsenceViewModel {
 			// calculate vacation-time and new rest-vacation-days
 			absence.getEmployee().substractVacationTime(absence.getNumberDays(absence));
 
-			string = test();
-			string += setText(absence);
+			string = absenceToString();
+			string += getVacationRest(absence);
 			this.showVacation.setText(string);
 			this.absencePreview.setText("Urlaub beantragt: ");
 
@@ -107,18 +112,48 @@ public class AbsenceViewModel {
 		}
 	}
 
-	
+
+	/**
+	 *
+	 * @param absence
+	 */
 	private void absenceToArrayList(Absence absence){
 		absence.setAbsenceToArrayList(absence);
 	}
 
-	
+
+	/**
+	 *
+	 */
 	public void vacationPreview () {
-		this.showVacation.setText(test());
+		String string;
+
+//		prüfen, ob es überschneidungen von eingetragenen urlaubstagen gibt
+//		******************************************************************
+		LocalDate localDateFrom = this.absenceFrom.getValue();
+		Date dateFrom = Date.from(localDateFrom.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		string = "" + localDateFrom.getMonthValue() + localDateFrom.getDayOfMonth();
+
+		if (Helper.isSetDatePicker(this.absenceTo)) {
+			LocalDate localDateTo = this.absenceTo.getValue();
+			Date dateTo = Date.from(localDateTo.atStartOfDay(ZoneId.systemDefault()).toInstant());
+			string += " - " + localDateTo.getMonthValue() + localDateTo.getDayOfMonth();
+		}
+
+		System.out.println(string);
+
+
+//		ausgewählten zeitpunkt/zeitraum als vorschau anzeigen
+//		*****************************************************
+		this.showVacation.setText(absenceToString());
 	}
 
 
-	private String test() {
+	/**
+	 *
+	 * @return
+	 */
+	private String absenceToString() {
 		String string = "";
 		double numberDays;
 
@@ -168,14 +203,18 @@ public class AbsenceViewModel {
 		return string;
 	}
 
-	
-	private String setText(Absence absence) {
+
+	/**
+	 *
+	 * @param absence
+	 * @return
+	 */
+	private String getVacationRest(Absence absence) {
 		/* Show Vacation-Time and Number Vacation-Days  */
 		String string = "";
 		string += "\nResturlaub: " + absence.getEmployee().getVacationRest();
 
 		return string;
-
 	}
 	
 }
