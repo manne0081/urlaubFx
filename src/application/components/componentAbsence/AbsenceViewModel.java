@@ -1,5 +1,6 @@
 package application.components.componentAbsence;
 
+import application.components.componentEmployee.Employee;
 import application.helper.session.Helper;
 import application.helper.session.Session;
 import javafx.event.ActionEvent;
@@ -126,26 +127,77 @@ public class AbsenceViewModel {
 	 *
 	 */
 	public void vacationPreview () {
-		String string;
+		Employee employee;
+		Date dateFrom;
+		Date dateTo;
 
-//		prüfen, ob es überschneidungen von eingetragenen urlaubstagen gibt
-//		******************************************************************
+		employee = Session.getEmployee();
+		LocalDate localDateToday = LocalDate.now();
 		LocalDate localDateFrom = this.absenceFrom.getValue();
-		Date dateFrom = Date.from(localDateFrom.atStartOfDay(ZoneId.systemDefault()).toInstant());
-		string = "" + localDateFrom.getMonthValue() + localDateFrom.getDayOfMonth();
+		LocalDate localDateTo = null;
+
+		dateFrom = Date.from(localDateFrom.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
 		if (Helper.isSetDatePicker(this.absenceTo)) {
-			LocalDate localDateTo = this.absenceTo.getValue();
-			Date dateTo = Date.from(localDateTo.atStartOfDay(ZoneId.systemDefault()).toInstant());
-			string += " - " + localDateTo.getMonthValue() + localDateTo.getDayOfMonth();
+			localDateTo = this.absenceTo.getValue();
+			dateTo = Date.from(localDateTo.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		} else {
+			dateTo = dateFrom;
 		}
 
-		System.out.println(string);
+		double numberCheckingDays;
+
+//		################################################
+//		vacation-check: 1. any vacation-day before today
+//		  				2. firstDay < lastDay
+//						3. any vacation-day exists
+//		################################################
+
+//		calculate days to check
+//		***********************
+		if (dateTo != null) {
+			numberCheckingDays = Absence.getNumberDays(dateFrom, dateTo);
+		} else {
+			numberCheckingDays = 1;
+		}
+
+//		first check -> any day before today
+//		***********************************
+		if (localDateToday.isAfter(localDateFrom)) {
+			System.out.println("Fehler, Datum in der Vergangenheit");  // Nur Hinweis, kann sein dass man Urlaub nachträglich eingeben möchte...
+			this.showVacation.setText("Achtung, das Datum liegt in der Vergangenheit!\nDer Urlaub kann trotzdem eingetragen werden!");
+			return;
+		} else {
+//			// gewähltes datum >= heute
+		}
+
+//		second check -> lastDay before firstDay
+//		***************************************
+		if (localDateTo != null) {
+			if (localDateTo.isBefore(localDateFrom)) {
+				System.out.println("Fehler, Der letzte Tag liegt vor dem ersten Tag");  // Kein Hinweis sondern Fehler...
+				return;
+			}
+		}
+
+//		third check vacation about duplicate
+//		************************************
+
+
+		boolean bool = Absence.isAnyVacationIssue(employee, dateFrom, dateTo);
+
 
 
 //		ausgewählten zeitpunkt/zeitraum als vorschau anzeigen
 //		*****************************************************
-		this.showVacation.setText(absenceToString());
+		if (!bool) {
+			System.out.println("Keine Duplikate vorhanden!");
+			this.showVacation.setText(absenceToString());
+		} else {
+			System.out.println("Duplikate vorhanden");
+		}
+
+
 	}
 
 

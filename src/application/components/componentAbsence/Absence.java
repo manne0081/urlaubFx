@@ -98,7 +98,25 @@ public class Absence {
 	public void setAbsenceToArrayList(Absence absence) {
 		absences.add(absence);
 	}
-	
+
+
+	/**
+	 *
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public static Double getNumberDays(Date dateFrom, Date dateTo){
+		Double dblDays;
+
+		long time = dateTo.getTime() - dateFrom.getTime(); // Difference in milli-seconds
+		double days = Math.round((double) time / (24. * 60. * 60. * 1000.) + 1); // Difference in days
+		dblDays = days;
+		dblDays = getRealAbsenceDays(dateFrom, dblDays);
+
+		return dblDays;
+	}
+
 	
 	/**
 	 * Berechnet die Anzahl der gesamt eingetragenen Urlaubstage (incl. Wochenende)
@@ -169,5 +187,38 @@ public class Absence {
 		return absenceDays;
 	}
 
-	
+
+	/* vacation-check: 1. any vacation-day before today
+	 * 				   2. firstDay < lastDay
+	 * 				   3. any vacation-day exists */
+	/**
+	 *
+	 * @param employee
+	 * @param dateFrom
+	 * @param dateTo
+	 * @return
+	 */
+	public static boolean isAnyVacationIssue(Employee employee, Date dateFrom, Date dateTo) {
+		boolean bool = false;
+
+//		System.out.println(employee.getFullName());
+//		System.out.println(dateFrom.toString());
+//		if (!dateTo.equals(dateFrom)) {
+//			System.out.println(dateTo.toString());
+//		}
+
+//		check all vacations
+		for (int i = 0; i < absences.size(); i++) {
+//			check vacation about active user
+			if (absences.get(i).getEmployee().equals(employee)) {
+//				check vacation duplicate
+
+
+
+			}
+		}
+
+		return bool;
+	}
+
 }
